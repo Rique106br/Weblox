@@ -2,133 +2,1352 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meu Jogo Web</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>WEBLOX - Plataforma de Jogos 3D & Scratch</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #121212;
-      color: #fff;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b0f19;
+      color: #f8fafc;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ==========================================================================
+       1. TELA INICIAL (HOME / LOBBY)
+       ========================================================================== */
+    #screen-home {
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      overflow-y: auto;
     }
-    .card {
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      margin-bottom: 20px;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 4px;
-      border: 1px solid #333;
-      box-sizing: border-box;
-    }
-    button {
-      background: #3ecf8e;
-      color: #121212;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #34b27b;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      padding: 8px 0;
-      border-bottom: 1px solid #333;
+
+    /* Header Weblox */
+    .home-navbar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand-logo {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-logo span { color: #38bdf8; }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s;
+    }
+    .user-profile:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 2px solid #38bdf8;
+    }
+
+    /* Conteúdo Principal da Home */
+    .home-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+      width: 100%;
+    }
+
+    .hero-banner {
+      background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .hero-text h1 { font-size: 28px; margin-bottom: 8px; }
+    .hero-text p { color: #e2e8f0; font-size: 14px; max-width: 500px; }
+
+    /* Grid de Jogos na Tela Inicial */
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .game-card {
+      background: #1e293b;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .game-card:hover {
+      transform: translateY(-4px);
+      border-color: #38bdf8;
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+    }
+    .card-thumb {
+      height: 130px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-title { font-size: 16px; font-weight: bold; margin-bottom: 4px; color: #fff; }
+    .card-author { font-size: 12px; color: #94a3b8; margin-bottom: 12px; }
+    .card-actions { display: flex; gap: 8px; }
+
+    /* Botões Padrão */
+    .btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-success { background: #16a34a; }
+    .btn-purple { background: #8b5cf6; }
+    .btn-danger { background: #dc2626; }
+    .btn-secondary { background: #334155; color: #f8fafc; }
+
+    /* ==========================================================================
+       2. AMBIENTE DE JOGO 3D E CANVAS
+       ========================================================================== */
+    #screen-game {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #game-container { width: 100%; height: 100%; }
+
+    /* Overlay de Interface do Jogo */
+    .game-ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 12px;
+      z-index: 10;
+    }
+    .interactive { pointer-events: auto; }
+
+    .game-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 12px;
+      height: 12px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    #crosshair::before, #crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+    }
+    #crosshair::before { top: 5px; left: 0; width: 12px; height: 2px; }
+    #crosshair::after { top: 0; left: 5px; width: 2px; height: 12px; }
+
+    /* Toolbar de Blocos */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 8px;
+      border-radius: 12px;
+      align-self: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .color-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+    .color-btn.selected { transform: scale(1.15); border-color: #ffffff; }
+
+    /* Editor Scratch Overlay */
+    #blockly-container {
+      position: absolute;
+      top: 65px;
+      right: 12px;
+      bottom: 12px;
+      width: 440px;
+      max-width: 90vw;
+      background: #1e293b;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 20;
+    }
+    #blockly-header {
+      background: #0f172a;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #blocklyDiv { width: 100%; height: 100%; }
+
+    /* HUD Message */
+    #hud-msg {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-weight: bold;
+      color: #38bdf8;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      border: 1px solid #38bdf8;
+    }
+
+    /* Controles Mobile Touch */
+    .mobile-controls {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      top: 0;
+      pointer-events: none;
+    }
+    #joystick-zone {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 110px;
+      height: 110px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      pointer-events: auto;
+    }
+    #joystick-knob {
+      position: absolute;
+      top: 32px;
+      left: 32px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+    }
+    .action-btns {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: auto;
+    }
+    .action-btn {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.75);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.6);
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Modais Pop-up */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 24px;
+      border-radius: 16px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    }
+    .modal h3 { font-size: 20px; color: #38bdf8; }
+    .modal input {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: white;
+      font-size: 14px;
+      outline: none;
+    }
+    .modal input:focus { border-color: #38bdf8; }
+
+    .color-picker-grid {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .avatar-color-option {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .avatar-color-option.selected {
+      border-color: #ffffff;
+      transform: scale(1.1);
     }
   </style>
-  <!-- SDK do Supabase via CDN -->
+
+  <!-- Bibliotecas Externas (Three.js, Blockly, PeerJS, Supabase) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Salvar Pontuação</h2>
-    <input type="text" id="jogadorNome" placeholder="Seu Nome / Nick">
-    <input type="number" id="jogadorPontos" placeholder="Pontuação">
-    <button onclick="salvarPontuacao()">Enviar para o Ranking</button>
+  <!-- ==========================================================================
+       MODAL DE CRIAÇÃO / EDIÇÃO DE CONTA
+       ========================================================================== -->
+  <div id="account-modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="account-modal-title">👤 Criar Conta Weblox</h3>
+      <p style="font-size: 13px; color: #94a3b8;">Crie seu perfil para jogar, publicar seus mapas e jogar com amigos.</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <label style="font-size: 12px; font-weight: bold;">Nome do Jogador:</label>
+        <input type="text" id="acc-username-input" placeholder="Ex: PlayerPro99" maxlength="16">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <label style="font-size: 12px; font-weight: bold;">Cor do Avatar:</label>
+        <div class="color-picker-grid">
+          <div class="avatar-color-option selected" style="background: #0284c7;" data-color="#0284c7"></div>
+          <div class="avatar-color-option" style="background: #16a34a;" data-color="#16a34a"></div>
+          <div class="avatar-color-option" style="background: #dc2626;" data-color="#dc2626"></div>
+          <div class="avatar-color-option" style="background: #9333ea;" data-color="#9333ea"></div>
+          <div class="avatar-color-option" style="background: #ea580c;" data-color="#ea580c"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-success" id="btn-save-account" style="padding: 12px; font-size: 14px; margin-top: 8px;">
+        💾 Salvar Perfil
+      </button>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Ranking Global</h2>
-    <ul id="listaRanking">Carregando...</ul>
+  <!-- ==========================================================================
+       TELA 1: HOME PAGE / LOBBY WEBLOX
+       ========================================================================== -->
+  <div id="screen-home">
+    <div class="home-navbar">
+      <div class="brand-logo">WE<span>BLOX</span> STUDIO</div>
+      <div class="user-profile" id="btn-open-account-modal" title="Clique para editar seu perfil">
+        <div class="user-avatar" id="user-avatar-icon">P</div>
+        <span id="user-display-name" style="font-weight: 600;">Jogador</span>
+      </div>
+    </div>
+
+    <div class="home-content">
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h1>Crie, Programação Scratch & Multijogador</h1>
+          <p>Monte seu mapa em 3D, adicione lógica visual em blocos tipo Scratch e jogue online com qualquer pessoa.</p>
+        </div>
+        <button class="btn btn-purple" id="btn-create-new-game" style="padding: 14px 24px; font-size: 15px;">
+          ➕ Criar Novo Jogo
+        </button>
+      </div>
+
+      <div class="section-title">🎮 Jogos da Comunidade</div>
+      <div class="games-grid" id="games-grid-container">
+        <!-- Jogos dinâmicos inseridos via JavaScript -->
+      </div>
+    </div>
   </div>
+
+  <!-- ==========================================================================
+       TELA 2: AMBIENTE DE JOGO / STUDIO 3D
+       ========================================================================== -->
+  <div id="screen-game" class="hidden">
+    <div id="game-container"></div>
+    <div id="crosshair"></div>
+    <div id="hud-msg">Aviso</div>
+
+    <!-- Interface HUD do Jogo -->
+    <div class="game-ui-layer">
+      <div class="game-topbar interactive">
+        <button class="btn btn-secondary" id="btn-back-home">🏠 Início</button>
+        <span id="current-game-title" style="font-weight: bold; color: #38bdf8;">Nome do Jogo</span>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" id="btn-toggle-build">🔨 Modo Criar</button>
+          <button class="btn btn-purple" id="btn-toggle-script">🧩 Scratch Editor</button>
+          <button class="btn btn-success" id="btn-publish-game">📢 Publicar</button>
+          <button class="btn btn-secondary" id="btn-mp-room">🌐 Sala P2P</button>
+        </div>
+      </div>
+
+      <!-- Toolbar de Blocos -->
+      <div class="toolbar interactive hidden" id="build-toolbar">
+        <button class="btn btn-danger" id="btn-destroy">Marreta</button>
+        <div class="color-btn selected" style="background:#22c55e;" data-color="0x22c55e"></div>
+        <div class="color-btn" style="background:#3b82f6;" data-color="0x3b82f6"></div>
+        <div class="color-btn" style="background:#ef4444;" data-color="0xef4444"></div>
+        <div class="color-btn" style="background:#eab308;" data-color="0xeab308"></div>
+        <div class="color-btn" style="background:#a855f7;" data-color="0xa855f7"></div>
+      </div>
+
+      <!-- Controles Mobile -->
+      <div class="mobile-controls">
+        <div id="joystick-zone"><div id="joystick-knob"></div></div>
+        <div class="action-btns">
+          <div class="action-btn" id="btn-touch-action">AÇÃO</div>
+          <div class="action-btn" id="btn-touch-jump">PULAR</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor Scratch Flutuante -->
+    <div id="blockly-container" class="interactive hidden">
+      <div id="blockly-header">
+        <span style="font-weight: bold; color: #38bdf8;">Programação por Bloquinhos</span>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-success" id="btn-run-script" style="padding: 4px 10px;">▶ Rodar</button>
+          <button class="btn btn-danger" id="btn-close-script" style="padding: 4px 8px;">✕</button>
+        </div>
+      </div>
+      <div id="blocklyDiv"></div>
+    </div>
+  </div>
+
+  <!-- Modal Multijogador -->
+  <div class="modal-overlay hidden" id="mp-modal-overlay">
+    <div class="modal">
+      <h3>🌐 Multijogador P2P</h3>
+      <p style="font-size: 12px; color: #94a3b8;">Código da Sua Sala (Passe para Amigos):</p>
+      <b id="my-peer-id" style="color:#38bdf8; word-break: break-all;">Gerando...</b>
+      <hr style="border-color:#334155;">
+      <input type="text" id="join-peer-id" placeholder="Digite o Código da Sala do Amigo">
+      <button class="btn btn-success" id="btn-connect-peer">Entrar na Sala</button>
+      <button class="btn btn-danger" id="btn-close-mp-modal">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Toolbox Scratch -->
+  <xml id="toolbox" style="display: none">
+    <category name="🚀 Eventos" colour="#5b80a5">
+      <block type="event_on_start"></block>
+    </category>
+    <category name="🎮 Ações do Jogador" colour="#a55b80">
+      <block type="action_player_jump"></block>
+      <block type="action_teleport_player"></block>
+      <block type="action_hud_msg"></block>
+    </category>
+    <category name="🧱 Mundo 3D" colour="#5ba55b">
+      <block type="action_spawn_block"></block>
+      <block type="action_clear_world"></block>
+    </category>
+    <category name="🔢 Matemática" colour="#5b6da5">
+      <block type="math_number"><field name="NUM">1</field></block>
+    </category>
+  </xml>
 
   <script>
-    // Configuração do Supabase (Substitua pelas suas chaves)
-const SUPABASE_URL = 'https://zydarwftpvgqbwyxntdp.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5ZGFyd2Z0cHZncWJ3eXhudGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTYxODIsImV4cCI6MjEwNjQ3MjE4Mn0.VQM6Djof_vZXfDJMRpiHOoVqv5GCe2UyFwhWaly7oBE';
+    // ==========================================================================
+    // 0. INICIALIZAÇÃO DO SUPABASE
+    // ==========================================================================
+    const { createClient } = supabase;
+    const supabaseUrl = 'https://zydarwftpvgqbwyxntdp.supabase.co'; // Ex: https://xxxxx.supabase.co
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5ZGFyd2Z0cHZncWJ3eXhudGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTYxODIsImV4cCI6MjEwNjQ3MjE4Mn0.VQM6Djof_vZXfDJMRpiHOoVqv5GCe2UyFwhWaly7oBE';
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // ==========================================================================
+    // 1. SISTEMA DE GESTÃO DE CONTA DO USUÁRIO
+    // ==========================================================================
+    let currentUser = null;
+    let selectedAvatarColor = '#0284c7';
 
-
-    // Função para buscar e exibir o ranking
-    async function carregarRanking() {
-      const lista = document.getElementById('listaRanking');
-      lista.innerHTML = 'Carregando...';
-
-      const { data, error } = await db
-        .from('ranking')
-        .select('nome, pontuacao')
-        .order('pontuacao', { ascending: false })
-        .limit(10);
-
-      if (error) {
-        console.error('Erro ao buscar dados:', error);
-        lista.innerHTML = '<li>Erro ao carregar o ranking.</li>';
-        return;
+    function loadUserProfile() {
+      const stored = localStorage.getItem('weblox_user');
+      if (stored) {
+        try {
+          currentUser = JSON.parse(stored);
+        } catch(e) {}
       }
+      if (!currentUser) {
+        openAccountModal(true);
+      } else {
+        updateUserUI();
+      }
+    }
 
-      lista.innerHTML = '';
-      data.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span>#${index + 1} ${item.nome}</span> <strong>${item.pontuacao} pts</strong>`;
-        lista.appendChild(li);
+    function updateUserUI() {
+      if (!currentUser) return;
+      document.getElementById('user-display-name').innerText = currentUser.name;
+      const avatarIcon = document.getElementById('user-avatar-icon');
+      avatarIcon.innerText = currentUser.name.charAt(0).toUpperCase();
+      avatarIcon.style.backgroundColor = currentUser.color;
+    }
+
+    function openAccountModal(isNew = false) {
+      document.getElementById('account-modal-overlay').classList.remove('hidden');
+      document.getElementById('account-modal-title').innerText = isNew ? '👤 Criar Sua Conta' : '✏️️ Editar Conta';
+      if (currentUser) {
+        document.getElementById('acc-username-input').value = currentUser.name;
+        selectedAvatarColor = currentUser.color;
+        highlightAvatarColor(selectedAvatarColor);
+      }
+    }
+
+    function highlightAvatarColor(colorHex) {
+      document.querySelectorAll('.avatar-color-option').forEach(el => {
+        el.classList.toggle('selected', el.getAttribute('data-color') === colorHex);
       });
     }
 
-    // Função para enviar os pontos do jogador
-    async function salvarPontuacao() {
-      const nome = document.getElementById('jogadorNome').value.trim();
-      const pontuacao = parseInt(document.getElementById('jogadorPontos').value, 10);
+    document.querySelectorAll('.avatar-color-option').forEach(el => {
+      el.addEventListener('click', () => {
+        selectedAvatarColor = el.getAttribute('data-color');
+        highlightAvatarColor(selectedAvatarColor);
+      });
+    });
 
-      if (!nome || isNaN(pontuacao)) {
-        alert('Preencha o nome e a pontuação corretamente.');
+    document.getElementById('btn-save-account').addEventListener('click', () => {
+      const nameInput = document.getElementById('acc-username-input').value.trim();
+      if (!nameInput) {
+        alert('Por favor, digite um nome de usuário!');
         return;
       }
+      currentUser = { name: nameInput, color: selectedAvatarColor };
+      localStorage.setItem('weblox_user', JSON.stringify(currentUser));
+      updateUserUI();
+      document.getElementById('account-modal-overlay').classList.add('hidden');
+    });
 
-      const { error } = await db
-        .from('ranking')
-        .insert([{ nome: nome, pontuacao: pontuacao }]);
+    document.getElementById('btn-open-account-modal').addEventListener('click', () => {
+      openAccountModal(false);
+    });
 
-      if (error) {
-        console.error('Erro ao salvar:', error);
-        alert('Erro ao salvar os pontos!');
-      } else {
-        alert('Pontuação enviada com sucesso!');
-        document.getElementById('jogadorNome').value = '';
-        document.getElementById('jogadorPontos').value = '';
-        carregarRanking();
+    // ==========================================================================
+    // 2. TELA CHEIA E HORIZONTALIZAÇÃO (FULLSCREEN & LANDSCAPE LOCK)
+    // ==========================================================================
+    async function enterFullScreenAndLandscape() {
+      try {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          await docEl.requestFullscreen();
+        } else if (docEl.webkitRequestFullscreen) {
+          await docEl.webkitRequestFullscreen();
+        }
+
+        if (screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock('landscape').catch(() => {});
+        }
+      } catch (e) {
+        console.log('Modo Tela Cheia indisponível:', e);
       }
     }
 
-    // Carrega o ranking ao abrir a página
-    carregarRanking();
+    async function exitFullScreenAndLandscape() {
+      try {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            await document.webkitExitFullscreen();
+          }
+        }
+      } catch (e) {
+        console.log('Erro ao sair do modo Tela Cheia:', e);
+      }
+    }
+
+    // ==========================================================================
+    // 3. GERENCIADOR DE JOGOS & ARMAZENAMENTO SUPABASE (TELA INICIAL)
+    // ==========================================================================
+    const DEFAULT_GAMES = [
+      {
+        id: 'parkour-1',
+        title: 'Desafio Parkour 3D',
+        author: 'WebloxOfficial',
+        icon: '🧱',
+        blocks: [
+          {x: 0, y: 0, z: -3, color: '0x3b82f6'},
+          {x: 0, y: 1, z: -6, color: '0x22c55e'},
+          {x: 2, y: 2, z: -9, color: '0xeab308'},
+          {x: 2, y: 3, z: -12, color: '0xef4444'}
+        ],
+        scriptXml: `<xml xmlns="https://developers.google.com/blockly/xml"><block type="event_on_start" x="20" y="20"><next><block type="action_hud_msg"><field name="MSG">Chegue até o bloco vermelho!</field></block></next></block></xml>`
+      }
+    ];
+
+    let cachedGames = [];
+    let currentGame = null;
+
+    async function getPublishedGames() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('games')
+          .select('*')
+          .order('id', { ascending: false }); // Puxa do Supabase
+
+        if (error) throw error;
+        return data && data.length > 0 ? data : DEFAULT_GAMES;
+      } catch (err) {
+        console.error("Erro ao buscar jogos no Supabase:", err);
+        return DEFAULT_GAMES;
+      }
+    }
+
+    async function saveGameToSupabase(gameObj) {
+      try {
+        const { error } = await supabaseClient
+          .from('games')
+          .upsert([{
+            id: gameObj.id,
+            title: gameObj.title,
+            author: gameObj.author,
+            icon: gameObj.icon,
+            blocks: gameObj.blocks,
+            scriptXml: gameObj.scriptXml
+          }], { onConflict: 'id' });
+
+        if (error) throw error;
+        await renderGamesList();
+      } catch (err) {
+        console.error("Erro ao salvar jogo no Supabase:", err);
+        alert("Erro de conexão ao salvar mapa.");
+      }
+    }
+
+    async function renderGamesList() {
+      const container = document.getElementById('games-grid-container');
+      container.innerHTML = '<p style="color: #94a3b8; font-size: 14px; padding: 20px;">Carregando mapas do servidor...</p>';
+      
+      cachedGames = await getPublishedGames();
+      container.innerHTML = '';
+
+      cachedGames.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <div class="card-thumb">${game.icon || '🎮'}</div>
+          <div class="card-body">
+            <div>
+              <div class="card-title">${game.title}</div>
+              <div class="card-author">Criado por: ${game.author}</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-success" onclick="playGame('${game.id}')" style="width: 100%;">▶ Jogar</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ==========================================================================
+    // 4. ENGINE 3D (THREE.JS) & PERSONAGEM
+    // ==========================================================================
+    const gameContainer = document.getElementById('game-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a);
+    scene.fog = new THREE.FogExp2(0x0f172a, 0.012);
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    gameContainer.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(30, 50, 20);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+
+    const gridSize = 60;
+    const gridHelper = new THREE.GridHelper(gridSize, gridSize, 0x38bdf8, 0x1e293b);
+    gridHelper.position.y = 0.01;
+    scene.add(gridHelper);
+
+    const baseplate = new THREE.Mesh(
+      new THREE.BoxGeometry(gridSize, 2, gridSize),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 })
+    );
+    baseplate.position.y = -1;
+    baseplate.receiveShadow = true;
+    scene.add(baseplate);
+
+    const activeBlocks = {};
+    const blockGeometry = new THREE.BoxGeometry(1, 1, 1);
+    let currentBlockColor = '0x22c55e';
+    let buildAction = 'add';
+
+    function addBlock(x, y, z, colorHex, broadcast = true) {
+      const key = `${x},${y},${z}`;
+      if (activeBlocks[key]) return;
+
+      const mat = new THREE.MeshStandardMaterial({ color: parseInt(colorHex), roughness: 0.3 });
+      const mesh = new THREE.Mesh(blockGeometry, mat);
+      mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+      activeBlocks[key] = mesh;
+
+      if (broadcast && peerConn && peerConn.open) {
+        peerConn.send({ type: 'addBlock', x, y, z, colorHex });
+      }
+    }
+
+    function removeBlock(x, y, z, broadcast = true) {
+      const key = `${x},${y},${z}`;
+      if (activeBlocks[key]) {
+        scene.remove(activeBlocks[key]);
+        activeBlocks[key].geometry.dispose();
+        activeBlocks[key].material.dispose();
+        delete activeBlocks[key];
+
+        if (broadcast && peerConn && peerConn.open) {
+          peerConn.send({ type: 'removeBlock', x, y, z });
+        }
+      }
+    }
+
+    function clearAllBlocks() {
+      Object.keys(activeBlocks).forEach(key => {
+        const [x, y, z] = key.split(',').map(Number);
+        removeBlock(x, y, z, false);
+      });
+    }
+
+    const playerGroup = new THREE.Group();
+    scene.add(playerGroup);
+
+    function createAvatarMesh(headColor = 0xfacc15, torsoColor = 0x0284c7) {
+      const avatar = new THREE.Group();
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshStandardMaterial({ color: headColor }));
+      head.position.y = 1.35;
+      avatar.add(head);
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.3), new THREE.MeshStandardMaterial({ color: torsoColor }));
+      torso.position.y = 0.75;
+      avatar.add(torso);
+      const legL = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.6, 0.28), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
+      legL.position.set(-0.15, 0.3, 0);
+      avatar.add(legL);
+      const legR = legL.clone();
+      legR.position.x = 0.15;
+      avatar.add(legR);
+      return avatar;
+    }
+
+    playerGroup.add(createAvatarMesh());
+    playerGroup.position.set(0, 0, 0);
+
+    let isBuildMode = false;
+    let yaw = 0, pitch = 0;
+    let velocityY = 0;
+    let isGrounded = false;
+    let moveForward = 0, moveSide = 0;
+    const gravity = -20;
+    const jumpPower = 8;
+    const speed = 7;
+
+    const keys = {};
+    window.addEventListener('keydown', (e) => {
+      keys[e.code] = true;
+      if (e.code === 'Space' && isGrounded) velocityY = jumpPower;
+    });
+    window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+    let isPointerLocked = false;
+    renderer.domElement.addEventListener('click', () => {
+      if (!isTouchDevice && document.pointerLockElement !== renderer.domElement && document.getElementById('blockly-container').classList.contains('hidden')) {
+        renderer.domElement.requestPointerLock();
+      } else if (isBuildMode && !isTouchDevice) {
+        performBuildInteraction();
+      }
+    });
+
+    document.addEventListener('pointerlockchange', () => {
+      isPointerLocked = (document.pointerLockElement === renderer.domElement);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isPointerLocked) {
+        yaw -= e.movementX * 0.003;
+        pitch -= e.movementY * 0.003;
+        pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, pitch));
+      }
+    });
+
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    let touchLookId = null;
+    let touchStartPos = { x: 0, y: 0 };
+
+    if (isTouchDevice) {
+      const joystickZone = document.getElementById('joystick-zone');
+      const joystickKnob = document.getElementById('joystick-knob');
+
+      joystickZone.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const rect = joystickZone.getBoundingClientRect();
+        touchStartPos = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+      }, { passive: false });
+
+      joystickZone.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        const dx = t.clientX - touchStartPos.x;
+        const dy = t.clientY - touchStartPos.y;
+        const dist = Math.min(Math.hypot(dx, dy), 35);
+        const angle = Math.atan2(dy, dx);
+
+        joystickKnob.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
+        moveSide = Math.cos(angle) * (dist / 35);
+        moveForward = -Math.sin(angle) * (dist / 35);
+      }, { passive: false });
+
+      const resetJoy = () => { joystickKnob.style.transform = 'translate(0px, 0px)'; moveForward = 0; moveSide = 0; };
+      joystickZone.addEventListener('touchend', resetJoy);
+
+      window.addEventListener('touchstart', (e) => {
+        for (let t of e.changedTouches) {
+          if (t.clientX > window.innerWidth / 2 && touchLookId === null) {
+            touchLookId = t.identifier;
+            touchStartPos = { x: t.clientX, y: t.clientY };
+          }
+        }
+      });
+
+      window.addEventListener('touchmove', (e) => {
+        for (let t of e.changedTouches) {
+          if (t.identifier === touchLookId) {
+            yaw -= (t.clientX - touchStartPos.x) * 0.005;
+            pitch -= (t.clientY - touchStartPos.y) * 0.005;
+            pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, pitch));
+            touchStartPos = { x: t.clientX, y: t.clientY };
+          }
+        }
+      });
+
+      window.addEventListener('touchend', (e) => {
+        for (let t of e.changedTouches) {
+          if (t.identifier === touchLookId) touchLookId = null;
+        }
+      });
+
+      document.getElementById('btn-touch-jump').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (isGrounded) velocityY = jumpPower;
+      });
+
+      document.getElementById('btn-touch-action').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        performBuildInteraction();
+      });
+    }
+
+    const raycaster = new THREE.Raycaster();
+    const centerVector = new THREE.Vector2(0, 0);
+
+    function performBuildInteraction() {
+      if (!isBuildMode) return;
+      raycaster.setFromCamera(centerVector, camera);
+      const intersects = raycaster.intersectObjects(scene.children, false);
+
+      if (intersects.length > 0) {
+        const hit = intersects[0];
+        if (buildAction === 'add') {
+          const p = hit.point.clone().add(hit.face.normal.clone().multiplyScalar(0.5));
+          addBlock(Math.floor(p.x), Math.floor(p.y), Math.floor(p.z), currentBlockColor);
+        } else if (buildAction === 'remove' && hit.object !== baseplate) {
+          const p = hit.object.position;
+          removeBlock(Math.floor(p.x - 0.5), Math.floor(p.y - 0.5), Math.floor(p.z - 0.5));
+        }
+      }
+    }
+
+    // ==========================================================================
+    // 5. MULTIJOGADOR P2P (PEERJS)
+    // ==========================================================================
+    let peer = null;
+    let peerConn = null;
+    const remoteAvatars = {};
+
+    function initMultiplayer() {
+      if (peer) return;
+      peer = new Peer();
+
+      peer.on('open', (id) => {
+        document.getElementById('my-peer-id').innerText = id;
+      });
+
+      peer.on('connection', (conn) => {
+        peerConn = conn;
+        setupConnection();
+      });
+    }
+
+    function setupConnection() {
+      peerConn.on('data', (data) => {
+        if (data.type === 'playerPos') {
+          if (!remoteAvatars[data.id]) {
+            remoteAvatars[data.id] = createAvatarMesh(0xef4444, 0x10b981);
+            scene.add(remoteAvatars[data.id]);
+          }
+          remoteAvatars[data.id].position.set(data.x, data.y, data.z);
+          remoteAvatars[data.id].rotation.y = data.ry;
+        } else if (data.type === 'addBlock') {
+          addBlock(data.x, data.y, data.z, data.colorHex, false);
+        } else if (data.type === 'removeBlock') {
+          removeBlock(data.x, data.y, data.z, false);
+        } else if (data.type === 'hudMsg') {
+          showHUDMsg(data.msg);
+        }
+      });
+    }
+
+    setInterval(() => {
+      if (peerConn && peerConn.open && peer) {
+        peerConn.send({
+          type: 'playerPos',
+          id: peer.id,
+          x: playerGroup.position.x,
+          y: playerGroup.position.y,
+          z: playerGroup.position.z,
+          ry: yaw
+        });
+      }
+    }, 50);
+
+    // ==========================================================================
+    // 6. EDITOR SCRATCH / BLOCKLY
+    // ==========================================================================
+    Blockly.defineBlocksWithJsonArray([
+      {
+        "type": "event_on_start",
+        "message0": "🚀 Ao Clicar em Rodar",
+        "nextStatement": null,
+        "colour": 120
+      },
+      {
+        "type": "action_player_jump",
+        "message0": "🦘 Fazer Jogador Pular",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 330
+      },
+      {
+        "type": "action_teleport_player",
+        "message0": "📍 Teleportar Jogador X: %1 Y: %2 Z: %3",
+        "args0": [
+          { "type": "field_number", "name": "X", "value": 0 },
+          { "type": "field_number", "name": "Y", "value": 5 },
+          { "type": "field_number", "name": "Z", "value": 0 }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 260
+      },
+      {
+        "type": "action_hud_msg",
+        "message0": "💬 Mostrar Mensagem %1",
+        "args0": [
+          { "type": "field_input", "name": "MSG", "text": "Bem-vindo!" }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 160
+      },
+      {
+        "type": "action_spawn_block",
+        "message0": "🧱 Criar Bloco X: %1 Y: %2 Z: %3",
+        "args0": [
+          { "type": "field_number", "name": "X", "value": 0 },
+          { "type": "field_number", "name": "Y", "value": 1 },
+          { "type": "field_number", "name": "Z", "value": -3 }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 120
+      },
+      {
+        "type": "action_clear_world",
+        "message0": "🧹 Limpar Todos os Blocos",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 0
+      }
+    ]);
+
+    Blockly.JavaScript['event_on_start'] = function(block) { return ''; };
+    Blockly.JavaScript['action_player_jump'] = function(block) { return 'playerJump();\n'; };
+    Blockly.JavaScript['action_teleport_player'] = function(block) {
+      return `teleportPlayer(${block.getFieldValue('X')}, ${block.getFieldValue('Y')}, ${block.getFieldValue('Z')});\n`;
+    };
+    Blockly.JavaScript['action_hud_msg'] = function(block) {
+      return `showHUDMsg("${block.getFieldValue('MSG')}");\n`;
+    };
+    Blockly.JavaScript['action_spawn_block'] = function(block) {
+      return `addBlock(${block.getFieldValue('X')}, ${block.getFieldValue('Y')}, ${block.getFieldValue('Z')}, "${currentBlockColor}");\n`;
+    };
+    Blockly.JavaScript['action_clear_world'] = function(block) { return 'clearAllBlocks();\n'; };
+
+    let workspace = null;
+    function initBlockly() {
+      if (!workspace) {
+        workspace = Blockly.inject('blocklyDiv', {
+          toolbox: document.getElementById('toolbox'),
+          scrollbars: true,
+          trashcan: true,
+          theme: Blockly.Themes.Classic
+        });
+      }
+    }
+
+    function showHUDMsg(text) {
+      const hud = document.getElementById('hud-msg');
+      hud.innerText = text;
+      hud.style.opacity = '1';
+      setTimeout(() => { hud.style.opacity = '0'; }, 3000);
+      if (peerConn && peerConn.open) {
+        peerConn.send({ type: 'hudMsg', msg: text });
+      }
+    }
+
+    function playerJump() { velocityY = jumpPower; }
+    function teleportPlayer(x, y, z) { playerGroup.position.set(x, y, z); }
+
+    function executeScratchScript() {
+      if (!workspace) return;
+      const code = Blockly.JavaScript.workspaceToCode(workspace);
+      try {
+        const runScript = new Function('playerJump', 'teleportPlayer', 'showHUDMsg', 'addBlock', 'clearAllBlocks', code);
+        runScript(playerJump, teleportPlayer, showHUDMsg, addBlock, clearAllBlocks);
+      } catch (e) {
+        alert('Erro no Scratch Script: ' + e.message);
+      }
+    }
+
+    // ==========================================================================
+    // 7. EVENTOS DA NAVEGAÇÃO & TRANSIÇÃO DE TELAS
+    // ==========================================================================
+    async function playGame(gameId) {
+      currentGame = cachedGames.find(g => g.id === gameId) || cachedGames[0];
+
+      await enterFullScreenAndLandscape();
+
+      document.getElementById('screen-home').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      document.getElementById('current-game-title').innerText = currentGame.title;
+
+      setTimeout(() => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }, 200);
+
+      clearAllBlocks();
+      if (currentGame.blocks) {
+        currentGame.blocks.forEach(b => addBlock(b.x, b.y, b.z, b.color, false));
+      }
+
+      initBlockly();
+      workspace.clear();
+      if (currentGame.scriptXml) {
+        const xmlDom = Blockly.Xml.textToDom(currentGame.scriptXml);
+        Blockly.Xml.domToWorkspace(xmlDom, workspace);
+      }
+
+      executeScratchScript();
+    }
+
+    document.getElementById('btn-create-new-game').addEventListener('click', async () => {
+      const authorName = currentUser ? currentUser.name : 'Você';
+      const newGame = {
+        id: 'weblox-' + Date.now(),
+        title: 'Novo Jogo Weblox',
+        author: authorName,
+        icon: '🎨',
+        blocks: [],
+        scriptXml: `<xml xmlns="https://developers.google.com/blockly/xml"><block type="event_on_start" x="20" y="20"></block></xml>`
+      };
+      
+      // Cria o jogo, joga na cache e abre direto (só publica se ele clicar em salvar lá dentro)
+      cachedGames.unshift(newGame);
+      playGame(newGame.id);
+    });
+
+    document.getElementById('btn-back-home').addEventListener('click', async () => {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-home').classList.remove('hidden');
+      if (document.exitPointerLock) document.exitPointerLock();
+
+      await exitFullScreenAndLandscape();
+      await renderGamesList(); // Recarrega os mapas do servidor ao voltar pra home
+    });
+
+    document.getElementById('btn-toggle-build').addEventListener('click', () => {
+      isBuildMode = !isBuildMode;
+      document.getElementById('btn-toggle-build').innerText = isBuildMode ? '🎮 Modo Jogar' : '🔨 Modo Criar';
+      document.getElementById('build-toolbar').classList.toggle('hidden', !isBuildMode);
+    });
+
+    document.getElementById('btn-toggle-script').addEventListener('click', () => {
+      const el = document.getElementById('blockly-container');
+      el.classList.toggle('hidden');
+      if (!el.classList.contains('hidden')) {
+        initBlockly();
+        Blockly.svgResize(workspace);
+      }
+    });
+
+    document.getElementById('btn-close-script').addEventListener('click', () => {
+      document.getElementById('blockly-container').classList.add('hidden');
+    });
+
+    document.getElementById('btn-run-script').addEventListener('click', executeScratchScript);
+
+    // Salvar no Banco de Dados (Supabase)
+    document.getElementById('btn-publish-game').addEventListener('click', async () => {
+      if (!currentGame) return;
+      const title = prompt('Digite o Nome do seu Jogo para Publicar no Servidor:', currentGame.title);
+      if (title) {
+        document.getElementById('btn-publish-game').innerText = '⌛ Salvando...';
+        
+        const blocksData = Object.keys(activeBlocks).map(key => {
+          const [x, y, z] = key.split(',').map(Number);
+          return { x, y, z, color: '0x' + activeBlocks[key].material.color.getHexString() };
+        });
+
+        const xmlDom = Blockly.Xml.workspaceToDom(workspace);
+        const scriptXml = Blockly.Xml.domToText(xmlDom);
+
+        currentGame.title = title;
+        currentGame.author = currentUser ? currentUser.name : 'Criador';
+        currentGame.blocks = blocksData;
+        currentGame.scriptXml = scriptXml;
+
+        await saveGameToSupabase(currentGame);
+        
+        document.getElementById('btn-publish-game').innerText = '📢 Publicar';
+        document.getElementById('current-game-title').innerText = title;
+        alert('Jogo publicado no Supabase com sucesso! Ele já está online para todos.');
+      }
+    });
+
+    document.getElementById('btn-mp-room').addEventListener('click', () => {
+      document.getElementById('mp-modal-overlay').classList.remove('hidden');
+      initMultiplayer();
+    });
+
+    document.getElementById('btn-close-mp-modal').addEventListener('click', () => {
+      document.getElementById('mp-modal-overlay').classList.add('hidden');
+    });
+
+    document.getElementById('btn-connect-peer').addEventListener('click', () => {
+      const remoteId = document.getElementById('join-peer-id').value.trim();
+      if (remoteId) {
+        initMultiplayer();
+        peerConn = peer.connect(remoteId);
+        setupConnection();
+        document.getElementById('mp-modal-overlay').classList.add('hidden');
+        showHUDMsg('Conectado à sala multiplayer!');
+      }
+    });
+
+    document.querySelectorAll('.toolbar .color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.toolbar .color-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        currentBlockColor = btn.getAttribute('data-color');
+        buildAction = 'add';
+      });
+    });
+
+    document.getElementById('btn-destroy').addEventListener('click', () => {
+      buildAction = 'remove';
+      document.querySelectorAll('.toolbar .color-btn').forEach(b => b.classList.remove('selected'));
+    });
+
+    // ==========================================================================
+    // 8. LOOP PRINCIPAL DE RENDERIZAÇÃO
+    // ==========================================================================
+    const clock = new THREE.Clock();
+
+    function updatePhysics(delta) {
+      if (!isTouchDevice) {
+        moveForward = 0; moveSide = 0;
+        if (keys['KeyW']) moveForward = 1;
+        if (keys['KeyS']) moveForward = -1;
+        if (keys['KeyA']) moveSide = -1;
+        if (keys['KeyD']) moveSide = 1;
+      }
+
+      const forwardVec = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw)).normalize();
+      const sideVec = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw)).normalize();
+      const moveVec = new THREE.Vector3().addScaledVector(forwardVec, moveForward).addScaledVector(sideVec, moveSide);
+
+      if (moveVec.lengthSq() > 0) moveVec.normalize();
+
+      playerGroup.position.x += moveVec.x * speed * delta;
+      playerGroup.position.z += moveVec.z * speed * delta;
+
+      velocityY += gravity * delta;
+      playerGroup.position.y += velocityY * delta;
+
+      if (playerGroup.position.y <= 0) {
+        playerGroup.position.y = 0;
+        velocityY = 0;
+        isGrounded = true;
+      } else {
+        isGrounded = false;
+      }
+
+      playerGroup.rotation.y = yaw;
+
+      const camOffset = new THREE.Vector3(
+        Math.sin(yaw) * Math.cos(pitch) * 4,
+        Math.sin(pitch) * 4 + 1.8,
+        Math.cos(yaw) * Math.cos(pitch) * 4
+      );
+
+      camera.position.copy(playerGroup.position).add(camOffset);
+      camera.lookAt(playerGroup.position.x, playerGroup.position.y + 1.2, playerGroup.position.z);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.1);
+      if (!document.getElementById('screen-game').classList.contains('hidden')) {
+        updatePhysics(delta);
+        renderer.render(scene, camera);
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      if (workspace) Blockly.svgResize(workspace);
+    });
+
+    // Inicialização do App
+    loadUserProfile();
+    renderGamesList();
+    animate();
   </script>
 </body>
 </html>
