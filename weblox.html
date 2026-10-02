@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Jogo Web</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .card {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 4px;
+      border: 1px solid #333;
+      box-sizing: border-box;
+    }
+    button {
+      background: #3ecf8e;
+      color: #121212;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #34b27b;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px 0;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+  <!-- SDK do Supabase via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Salvar Pontuação</h2>
+    <input type="text" id="jogadorNome" placeholder="Seu Nome / Nick">
+    <input type="number" id="jogadorPontos" placeholder="Pontuação">
+    <button onclick="salvarPontuacao()">Enviar para o Ranking</button>
+  </div>
+
+  <div class="card">
+    <h2>Ranking Global</h2>
+    <ul id="listaRanking">Carregando...</ul>
+  </div>
+
+  <script>
+    // Configuração do Supabase (Substitua pelas suas chaves)
+const SUPABASE_URL = 'https://zydarwftpvgqbwyxntdp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5ZGFyd2Z0cHZncWJ3eXhudGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTYxODIsImV4cCI6MjEwNjQ3MjE4Mn0.VQM6Djof_vZXfDJMRpiHOoVqv5GCe2UyFwhWaly7oBE';
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+    // Função para buscar e exibir o ranking
+    async function carregarRanking() {
+      const lista = document.getElementById('listaRanking');
+      lista.innerHTML = 'Carregando...';
+
+      const { data, error } = await db
+        .from('ranking')
+        .select('nome, pontuacao')
+        .order('pontuacao', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Erro ao buscar dados:', error);
+        lista.innerHTML = '<li>Erro ao carregar o ranking.</li>';
+        return;
+      }
+
+      lista.innerHTML = '';
+      data.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>#${index + 1} ${item.nome}</span> <strong>${item.pontuacao} pts</strong>`;
+        lista.appendChild(li);
+      });
+    }
+
+    // Função para enviar os pontos do jogador
+    async function salvarPontuacao() {
+      const nome = document.getElementById('jogadorNome').value.trim();
+      const pontuacao = parseInt(document.getElementById('jogadorPontos').value, 10);
+
+      if (!nome || isNaN(pontuacao)) {
+        alert('Preencha o nome e a pontuação corretamente.');
+        return;
+      }
+
+      const { error } = await db
+        .from('ranking')
+        .insert([{ nome: nome, pontuacao: pontuacao }]);
+
+      if (error) {
+        console.error('Erro ao salvar:', error);
+        alert('Erro ao salvar os pontos!');
+      } else {
+        alert('Pontuação enviada com sucesso!');
+        document.getElementById('jogadorNome').value = '';
+        document.getElementById('jogadorPontos').value = '';
+        carregarRanking();
+      }
+    }
+
+    // Carrega o ranking ao abrir a página
+    carregarRanking();
+  </script>
+</body>
+</html>
