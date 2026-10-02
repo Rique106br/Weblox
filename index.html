@@ -58,9 +58,9 @@
 <body>
 
   <div class="card">
-    <h2>Salvar PontuaÁ„o</h2>
+    <h2>Salvar Pontua√ß√£o</h2>
     <input type="text" id="jogadorNome" placeholder="Seu Nome / Nick">
-    <input type="number" id="jogadorPontos" placeholder="PontuaÁ„o">
+    <input type="number" id="jogadorPontos" placeholder="Pontua√ß√£o">
     <button onclick="salvarPontuacao()">Enviar para o Ranking</button>
   </div>
 
@@ -70,14 +70,14 @@
   </div>
 
   <script>
-    // ConfiguraÁ„o do Supabase (Substitua pelas suas chaves)
+    // Configura√ß√£o do Supabase (Substitua pelas suas chaves)
 const SUPABASE_URL = 'https://zydarwftpvgqbwyxntdp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5ZGFyd2Z0cHZncWJ3eXhudGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTYxODIsImV4cCI6MjEwNjQ3MjE4Mn0.VQM6Djof_vZXfDJMRpiHOoVqv5GCe2UyFwhWaly7oBE';
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
-    // FunÁ„o para buscar e exibir o ranking
+    // Fun√ß√£o para buscar e exibir o ranking
     async function carregarRanking() {
       const lista = document.getElementById('listaRanking');
       lista.innerHTML = 'Carregando...';
@@ -102,13 +102,13 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       });
     }
 
-    // FunÁ„o para enviar os pontos do jogador
+    // Fun√ß√£o para enviar os pontos do jogador
     async function salvarPontuacao() {
       const nome = document.getElementById('jogadorNome').value.trim();
       const pontuacao = parseInt(document.getElementById('jogadorPontos').value, 10);
 
       if (!nome || isNaN(pontuacao)) {
-        alert('Preencha o nome e a pontuaÁ„o corretamente.');
+        alert('Preencha o nome e a pontua√ß√£o corretamente.');
         return;
       }
 
@@ -120,14 +120,14 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.error('Erro ao salvar:', error);
         alert('Erro ao salvar os pontos!');
       } else {
-        alert('PontuaÁ„o enviada com sucesso!');
+        alert('Pontua√ß√£o enviada com sucesso!');
         document.getElementById('jogadorNome').value = '';
         document.getElementById('jogadorPontos').value = '';
         carregarRanking();
       }
     }
 
-    // Carrega o ranking ao abrir a p·gina
+    // Carrega o ranking ao abrir a p√°gina
     carregarRanking();
   </script>
 </body>
